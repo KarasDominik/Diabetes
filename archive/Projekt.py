@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, ConfusionMatrixDisplay, confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 # Read data from our csv file
@@ -126,4 +130,44 @@ for factor in df:
 # print(newSkinThickness.mean())
 # plt.plot(newSkinThickness)
 # plt.title("With Linear Transformation")
+# plt.show()
+
+# Logistic regression
+
+x = df.drop(['Outcome'], axis=1)
+y = df['Outcome']
+
+x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
+clf = LogisticRegression(max_iter=1000)
+clf.fit(x_train, y_train)
+print(clf.score(x_test, y_test))
+
+# Exemplary patient
+pregnancies = 4
+glucose = 150
+bloodPressure = 75
+skinThickness = 32
+insulin = 120
+BMI = 35
+diabetesPedigreeFunction = 0.29
+age = 24
+patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
+                     insulin, BMI, diabetesPedigreeFunction, age]])
+patient = pd.DataFrame(patient)
+
+prediction = clf.predict(patient)
+print("Prediction:", prediction)
+
+# Naive Bayes
+
+# x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
+# gnb = GaussianNB()
+#
+# y_pred = gnb.fit(x_train, y_train).predict(x_test)
+# print("Number of mislabeled points out of a total %d points : %d" % (x_test.shape[0], (y_test != y_pred).sum()))
+# print(classification_report(y_test, y_pred))
+# cm = confusion_matrix(y_test, y_pred)
+# disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+# disp.plot()
+#
 # plt.show()
