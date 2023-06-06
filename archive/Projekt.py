@@ -1,12 +1,20 @@
 # Import necessary libraries
+import random
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, ConfusionMatrixDisplay, confusion_matrix
+from sklearn import linear_model, svm, tree
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression, RidgeCV, Ridge
+from sklearn.metrics import classification_report, ConfusionMatrixDisplay, confusion_matrix, r2_score, \
+    mean_absolute_error
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 # Read data from our csv file
@@ -35,7 +43,7 @@ for factor in df:
     df[factor] = df[factor].fillna(avg)
 
 # Describe data
-#print(df.describe())
+# print(df.describe())
 
 # # Data shape
 # print(df.shape)
@@ -132,33 +140,35 @@ for factor in df:
 # plt.title("With Linear Transformation")
 # plt.show()
 
-# Logistic regression
-
 x = df.drop(['Outcome'], axis=1)
 y = df['Outcome']
 
-x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
-clf = LogisticRegression(max_iter=1000)
-clf.fit(x_train, y_train)
-print(clf.score(x_test, y_test))
+# Logistic regression
 
-# Exemplary patient
-pregnancies = 4
-glucose = 150
-bloodPressure = 75
-skinThickness = 32
-insulin = 120
-BMI = 35
-diabetesPedigreeFunction = 0.29
-age = 24
-patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
-                     insulin, BMI, diabetesPedigreeFunction, age]])
-patient = pd.DataFrame(patient)
+# x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
+# clf = LogisticRegression(max_iter=1000)
+# clf.fit(x_train, y_train)
+# print(clf.score(x_test, y_test))
+# print("----------Classification report-----------")
+# print(classification_report(y_train, y_test))
+#
+# # Exemplary patient
+# pregnancies = 4
+# glucose = 150
+# bloodPressure = 75
+# skinThickness = 32
+# insulin = 120
+# BMI = 35
+# diabetesPedigreeFunction = 0.29
+# age = 24
+# patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
+#                      insulin, BMI, diabetesPedigreeFunction, age]])
+# patient = pd.DataFrame(patient)
+#
+# prediction = clf.predict(patient)
+# print("Prediction:", prediction)
 
-prediction = clf.predict(patient)
-print("Prediction:", prediction)
-
-# Naive Bayes
+# # Naive Bayes
 
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # gnb = GaussianNB()
@@ -171,3 +181,101 @@ print("Prediction:", prediction)
 # disp.plot()
 #
 # plt.show()
+
+# # PCA
+#
+dataTarget = df['Outcome']
+
+scaler = StandardScaler()
+scaler.fit(df)
+scaled_data = scaler.transform(df)
+pca = PCA(n_components=2)
+pca.fit(scaled_data)
+x_pca = pca.transform(scaled_data)
+# print(scaled_data.shape)
+# print(x_pca.shape)
+# plt.figure(figsize=(8, 6))
+# plt.scatter(x_pca[:, 0], x_pca[:, 1], c=dataTarget, cmap='prism')
+# plt.xlabel('First Principle Component')
+# plt.ylabel('Second Principle Component')
+# plt.show()
+
+# # KNN
+
+# X_train, X_test, y_train, y_test = train_test_split(df, dataTarget, test_size=0.5, random_state=0)
+# clf = KNeighborsClassifier(n_neighbors=7)
+# clf = clf.fit(X_train, y_train)
+# y_pred = clf.predict(X_test)
+# print("Without PCA")
+# print(classification_report(y_test, y_pred))
+#
+# X_train, X_test, y_train, y_test = train_test_split(x_pca, dataTarget, test_size=0.5, random_state=0)
+# clf = KNeighborsClassifier(n_neighbors=7)
+# clf = clf.fit(X_train, y_train)
+# y_pred = clf.predict(X_test)
+# print("PCA")
+# print(classification_report(y_test, y_pred))
+
+# SVM
+
+# print the names of the 13 features (X)
+# print("Features: ", x.columns)
+# # print the label type of cancer('malignant' 'benign') (Y)
+# print("Labels: ", data.target_names)
+# Split dataset into training set and test set
+X_train, X_test, y_train, y_test = train_test_split(x.values, y.values,
+test_size=0.3, random_state=109) # 70% training and 30% test
+#Create a svm Classifier
+clf = svm.SVC(kernel='poly')  # Linear Kernel
+#Train the model using the training sets
+clf.fit(X_train, y_train)
+#Predict the response for test dataset
+y_pred = clf.predict(X_test)
+# Model Accuracy: how often is the classifier correct?
+print("----------Classification report-----------")
+print(classification_report(y_test, y_pred))
+
+plt.figure(figsize=(8, 8))
+sns.scatterplot(x=X_train[:, 0], y=X_train[:, 1], hue=y_train)
+plt.title("SVM")
+plt.show()
+
+# Decision tree
+#
+# X_train,X_test,y_train,y_test=train_test_split(x.values, y.values,test_size=0.5,random_state=0)
+# clf=tree.DecisionTreeClassifier(criterion='gini',max_depth=3)
+# clf=clf.fit(X_train,y_train)
+# fig = plt.figure(figsize=(20, 12))
+# _ = tree.plot_tree(clf,
+#  feature_names=x.columns,
+# class_names=['0', '1'],
+# filled=True)
+# fig.savefig("decision_tree.png")
+# plt.show()
+#
+# # Random forest classifier
+#
+# X_train,X_test,y_train,y_test=train_test_split(x.values,y.values,test_size=0.5,random_state=0)
+# rf=RandomForestClassifier(max_depth=10,random_state=0)
+# clf=rf.fit(X_train,y_train)
+# y_pred=clf.predict(X_test)
+# print(clf.score(X_test,y_test))
+# print(confusion_matrix(y_test,y_pred))
+#
+# clf = KNeighborsClassifier(n_neighbors=7)
+# clf = clf.fit(X_train, y_train)
+# y_pred = clf.predict(X_test)
+# print(clf.score(X_test, y_test))
+# print(confusion_matrix(y_test, y_pred))
+
+# Multi layer classifier
+
+# X_train, X_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5, random_state=0)
+# clf = MLPClassifier(max_iter=550)
+# clf = clf.fit(X_train, y_train)
+# y_pred = clf.predict(X_test)
+# print(clf.coefs_)
+# print(clf.n_layers_)
+# print(clf.n_outputs_)
+# print(clf.score(X_test, y_test))
+# print(confusion_matrix(y_test, y_pred))
