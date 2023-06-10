@@ -1,16 +1,18 @@
 # Import necessary libraries
-import random
 
+import random
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import linkage, dendrogram
 from sklearn import linear_model, svm, tree
+from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, RidgeCV, Ridge
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, confusion_matrix, r2_score, \
-    mean_absolute_error
+    mean_absolute_error, silhouette_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -143,33 +145,18 @@ for factor in df:
 x = df.drop(['Outcome'], axis=1)
 y = df['Outcome']
 
-# Logistic regression
-
+# # Logistic regression
+#
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # clf = LogisticRegression(max_iter=1000)
 # clf.fit(x_train, y_train)
 # print(clf.score(x_test, y_test))
-# print("----------Classification report-----------")
+# print("----------Classification report for logistic regression-----------")
 # print(classification_report(y_train, y_test))
 #
-# # Exemplary patient
-# pregnancies = 4
-# glucose = 150
-# bloodPressure = 75
-# skinThickness = 32
-# insulin = 120
-# BMI = 35
-# diabetesPedigreeFunction = 0.29
-# age = 24
-# patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
-#                      insulin, BMI, diabetesPedigreeFunction, age]])
-# patient = pd.DataFrame(patient)
-#
-# prediction = clf.predict(patient)
-# print("Prediction:", prediction)
 
 # # Naive Bayes
-
+#
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # gnb = GaussianNB()
 #
@@ -182,8 +169,8 @@ y = df['Outcome']
 #
 # plt.show()
 
-# # PCA
-#
+# PCA
+
 dataTarget = df['Outcome']
 
 scaler = StandardScaler()
@@ -200,47 +187,56 @@ x_pca = pca.transform(scaled_data)
 # plt.ylabel('Second Principle Component')
 # plt.show()
 
-# # KNN
+# KNN
 
 # X_train, X_test, y_train, y_test = train_test_split(df, dataTarget, test_size=0.5, random_state=0)
-# clf = KNeighborsClassifier(n_neighbors=7)
+
+# # Find number of neighbours
+#
+# errors = []
+# for n in range(1, 51):
+#     clf = KNeighborsClassifier(n_neighbors=n)
+#     clf = clf.fit(X_train, y_train)
+#     print(str(n) + " Neighbours: " + str(clf.score(X_test, y_test)))
+#
+#     errors.append(clf.score(X_test, y_test))
+#
+# plt.plot(list(range(1, 51)), errors)
+# plt.show()
+
+# clf = KNeighborsClassifier(n_neighbors=8)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print("Without PCA")
 # print(classification_report(y_test, y_pred))
 #
-# X_train, X_test, y_train, y_test = train_test_split(x_pca, dataTarget, test_size=0.5, random_state=0)
-# clf = KNeighborsClassifier(n_neighbors=7)
-# clf = clf.fit(X_train, y_train)
-# y_pred = clf.predict(X_test)
-# print("PCA")
-# print(classification_report(y_test, y_pred))
-
-# SVM
-
-# print the names of the 13 features (X)
-# print("Features: ", x.columns)
-# # print the label type of cancer('malignant' 'benign') (Y)
-# print("Labels: ", data.target_names)
-# Split dataset into training set and test set
-X_train, X_test, y_train, y_test = train_test_split(x.values, y.values,
-test_size=0.3, random_state=109) # 70% training and 30% test
-#Create a svm Classifier
-clf = svm.SVC(kernel='poly')  # Linear Kernel
-#Train the model using the training sets
-clf.fit(X_train, y_train)
-#Predict the response for test dataset
+X_train, X_test, y_train, y_test = train_test_split(x_pca, dataTarget, test_size=0.5, random_state=0)
+clf = KNeighborsClassifier(n_neighbors=7)
+clf = clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
-# Model Accuracy: how often is the classifier correct?
-print("----------Classification report-----------")
+print("PCA")
 print(classification_report(y_test, y_pred))
 
-plt.figure(figsize=(8, 8))
-sns.scatterplot(x=X_train[:, 0], y=X_train[:, 1], hue=y_train)
-plt.title("SVM")
-plt.show()
+# # SVM
+#
+# X_train, X_test, y_train, y_test = train_test_split(x.values, y.values,
+# test_size=0.3, random_state=109) # 70% training and 30% test
+# #Create a svm Classifier
+# clf = svm.SVC(kernel='poly')  # Linear Kernel
+# #Train the model using the training sets
+# clf.fit(X_train, y_train)
+# #Predict the response for test dataset
+# y_pred = clf.predict(X_test)
+# # Model Accuracy: how often is the classifier correct?
+# print("----------Classification report-----------")
+# print(classification_report(y_test, y_pred))
+#
+# plt.figure(figsize=(8, 8))
+# sns.scatterplot(x=X_train[:, 0], y=X_train[:, 1], hue=y_train)
+# plt.title("SVM")
+# plt.show()
 
-# Decision tree
+# # Decision tree
 #
 # X_train,X_test,y_train,y_test=train_test_split(x.values, y.values,test_size=0.5,random_state=0)
 # clf=tree.DecisionTreeClassifier(criterion='gini',max_depth=3)
@@ -252,7 +248,8 @@ plt.show()
 # filled=True)
 # fig.savefig("decision_tree.png")
 # plt.show()
-#
+# print(classification_report(y_test, y_pred=clf.predict(X_test)))
+
 # # Random forest classifier
 #
 # X_train,X_test,y_train,y_test=train_test_split(x.values,y.values,test_size=0.5,random_state=0)
@@ -261,21 +258,136 @@ plt.show()
 # y_pred=clf.predict(X_test)
 # print(clf.score(X_test,y_test))
 # print(confusion_matrix(y_test,y_pred))
+# print(classification_report(y_test, y_pred))
 #
 # clf = KNeighborsClassifier(n_neighbors=7)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
+# print(classification_report(y_test, y_pred))
 
-# Multi layer classifier
-
+# # Multi layer classifier
+#
 # X_train, X_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5, random_state=0)
 # clf = MLPClassifier(max_iter=550)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
-# print(clf.coefs_)
-# print(clf.n_layers_)
-# print(clf.n_outputs_)
+# # print(clf.coefs_)
+# # print(clf.n_layers_)
+# # print(clf.n_outputs_)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
+#
+# print(classification_report(y_test, y_pred))
+
+# # K-means
+#
+# wcss = [] # sum of the squared distance
+# for i in range(1, 11):
+#     kmeans = KMeans(n_clusters=i,
+#                     init='k-means++',
+#                     max_iter=300,
+#                     n_init=10,
+#                     random_state=0)
+#     kmeans.fit(x)
+#     wcss.append(kmeans.inertia_)
+#
+#
+# plt.plot(range(1, 11), wcss)
+# plt.title('The Elbow Method Graph')
+# plt.xlabel('Number of clusters')
+# plt.ylabel('WCSS')
+# plt.show()
+#
+# rf = KMeans(n_clusters=2)
+# clf = rf.fit(x.values)
+# centroids = clf.cluster_centers_
+# score = silhouette_score(data, clf.labels_)
+# # print(centroids)
+# print(score)
+#
+# X = x.values
+# y_kmeans = clf.labels_
+# y_kmeans = clf.fit_predict(data)
+# # Visualising the clusters
+# # cols = iris.feature_names
+# plt.scatter(X[y_kmeans == 0, 2],
+#             X[y_kmeans == 0, 3],
+#             s=100, c='purple',
+#             label='1')
+# plt.scatter(X[y_kmeans == 1, 2],
+#             X[y_kmeans == 1, 3],
+#             s=100, c='orange',
+#             label='2')
+# plt.scatter(X[y_kmeans == 2, 0],
+#             X[y_kmeans == 2, 1],
+#             s=100, c='green',
+#             label='3')
+# plt.scatter(X[y_kmeans == 3, 0],
+#             X[y_kmeans == 3, 1],
+#             s=100, c='red',
+#             label='4')
+# # Plotting the centroids of the clusters
+# plt.scatter(centroids[:, 0],
+#             centroids[:, 1],
+#             s=400, c='black',
+#             marker="x",
+#             label='Centroids')
+# plt.legend()
+# plt.show()
+
+# # Dendrogram
+#
+# # separate features and class labels
+# X_features = x
+# y_labels = y
+# model = AgglomerativeClustering(linkage="ward", n_clusters=4)
+# model.fit(X_features)
+# predicted_labels = model.labels_
+# linkage_matrix = linkage(X_features, 'ward')
+# plot = plt.figure(figsize=(14, 7))
+# dendrogram(
+#     linkage_matrix,
+#     truncate_mode='lastp',
+#     p=20,
+#     color_threshold=0,
+# )
+# plt.title('Hierarchical Clustering Dendrogram (linkage=ward)')
+# plt.xlabel('sample index')
+# plt.ylabel('distance')
+# plt.show()
+
+# parameters = []
+# print("======Menu======")
+# pregnancies = int(input("Enter your number of pregnancies: "))
+# glucose = int(input("Enter your glucose level: "))
+# bloodPressure = int(input("Enter your blood pressure level: "))
+# skinThickness = int(input("Enter your skin thickness: "))
+# insulin = int(input("Enter your insulin level: "))
+# BMI = int(input("Enter your BMI: "))
+# diabetesPedigreeFunction = int(input("Enter your diabetes pedigree function: "))
+# age = int(input("Enter your age: "))
+#
+# exemplaryPatient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
+#                      insulin, BMI, diabetesPedigreeFunction, age]])
+# exemplaryPatient = pd.DataFrame(exemplaryPatient)
+#
+# prediction = clf.predict(exemplaryPatient)
+# print("Prediction: ", prediction)
+
+# Exemplary patient
+pregnancies = 4
+glucose = 150
+bloodPressure = 75
+skinThickness = 32
+insulin = 120
+BMI = 35
+diabetesPedigreeFunction = 0.29
+age = 24
+patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
+                     insulin, BMI, diabetesPedigreeFunction, age]])
+patient = pd.DataFrame(patient)
+print(patient)
+prediction = clf.predict(patient)
+print("Prediction:", prediction)
