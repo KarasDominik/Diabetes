@@ -13,7 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, RidgeCV, Ridge
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, confusion_matrix, r2_score, \
     mean_absolute_error, silhouette_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
@@ -147,14 +147,14 @@ for factor in df:
 x = df.drop(['Outcome'], axis=1)
 y = df['Outcome']
 
-# # Logistic regression
-#
-# x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
-# clf = LogisticRegression(max_iter=1000)
-# clf.fit(x_train, y_train)
-# print(clf.score(x_test, y_test))
-# print("----------Classification report for logistic regression-----------")
-# print(classification_report(y_train, y_test))
+# Logistic regression
+
+x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
+clf = LogisticRegression(max_iter=1000)
+clf.fit(x_train, y_train)
+print(clf.score(x_test, y_test))
+print("----------Classification report for logistic regression-----------")
+print(classification_report(y_train, y_test))
 
 # # Naive Bayes
 #
@@ -169,14 +169,14 @@ y = df['Outcome']
 # disp.plot()
 # plt.show()
 
-# PCA
-
-scaler = StandardScaler()
-scaler.fit(df)
-scaled_data = scaler.transform(df)
-pca = PCA(n_components=2)
-pca.fit(scaled_data)
-x_pca = pca.transform(scaled_data)
+# # PCA
+#
+# scaler = StandardScaler()
+# scaler.fit(df)
+# scaled_data = scaler.transform(df)
+# pca = PCA(n_components=2)
+# pca.fit(scaled_data)
+# x_pca = pca.transform(scaled_data)
 # print(scaled_data.shape)
 # print(x_pca.shape)
 # plt.figure(figsize=(8, 6))
@@ -208,12 +208,12 @@ x_pca = pca.transform(scaled_data)
 # print("Without PCA")
 # print(classification_report(y_test, y_pred))
 #
-X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
-clf = KNeighborsClassifier(n_neighbors=8)
-clf = clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-print("PCA")
-print(classification_report(y_test, y_pred))
+# X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
+# clf = KNeighborsClassifier(n_neighbors=8)
+# clf = clf.fit(X_train, y_train)
+# y_pred = clf.predict(X_test)
+# print("PCA")
+# print(classification_report(y_test, y_pred))
 
 # # SVM
 #
