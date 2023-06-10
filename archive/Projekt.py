@@ -158,12 +158,6 @@ y = df['Outcome']
 
 # # Naive Bayes
 #
-<<<<<<< HEAD
-=======
-
-# # Naive Bayes
-#
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # gnb = GaussianNB()
 #
@@ -173,28 +167,9 @@ y = df['Outcome']
 # cm = confusion_matrix(y_test, y_pred)
 # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 # disp.plot()
-<<<<<<< HEAD
-# plt.show()
-
-# # PCA
-#
-# scaler = StandardScaler()
-# scaler.fit(df)
-# scaled_data = scaler.transform(df)
-# pca = PCA(n_components=2)
-# pca.fit(scaled_data)
-# x_pca = pca.transform(scaled_data)
-# print(scaled_data.shape)
-# print(x_pca.shape)
-# plt.figure(figsize=(8, 6))
-# plt.scatter(x_pca[:, 0], x_pca[:, 1], c=y, cmap='prism')
-=======
-#
 # plt.show()
 
 # PCA
-
-dataTarget = df['Outcome']
 
 scaler = StandardScaler()
 scaler.fit(df)
@@ -205,21 +180,14 @@ x_pca = pca.transform(scaled_data)
 # print(scaled_data.shape)
 # print(x_pca.shape)
 # plt.figure(figsize=(8, 6))
-# plt.scatter(x_pca[:, 0], x_pca[:, 1], c=dataTarget, cmap='prism')
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
+# plt.scatter(x_pca[:, 0], x_pca[:, 1], c=y, cmap='prism')
 # plt.xlabel('First Principle Component')
 # plt.ylabel('Second Principle Component')
 # plt.show()
 
-<<<<<<< HEAD
 # # KNN
 
 # X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.5, random_state=0)
-=======
-# KNN
-
-# X_train, X_test, y_train, y_test = train_test_split(df, dataTarget, test_size=0.5, random_state=0)
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 
 # # Find number of neighbours
 #
@@ -240,13 +208,12 @@ x_pca = pca.transform(scaled_data)
 # print("Without PCA")
 # print(classification_report(y_test, y_pred))
 #
-<<<<<<< HEAD
-# X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
-# clf = KNeighborsClassifier(n_neighbors=8)
-# clf = clf.fit(X_train, y_train)
-# y_pred = clf.predict(X_test)
-# print("PCA")
-# print(classification_report(y_test, y_pred))
+X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
+clf = KNeighborsClassifier(n_neighbors=8)
+clf = clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+print("PCA")
+print(classification_report(y_test, y_pred))
 
 # # SVM
 #
@@ -256,24 +223,6 @@ x_pca = pca.transform(scaled_data)
 # # Train the model using the training sets
 # clf.fit(X_train, y_train)
 # # Predict the response for test dataset
-=======
-X_train, X_test, y_train, y_test = train_test_split(x_pca, dataTarget, test_size=0.5, random_state=0)
-clf = KNeighborsClassifier(n_neighbors=7)
-clf = clf.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-print("PCA")
-print(classification_report(y_test, y_pred))
-
-# # SVM
-#
-# X_train, X_test, y_train, y_test = train_test_split(x.values, y.values,
-# test_size=0.3, random_state=109) # 70% training and 30% test
-# #Create a svm Classifier
-# clf = svm.SVC(kernel='poly')  # Linear Kernel
-# #Train the model using the training sets
-# clf.fit(X_train, y_train)
-# #Predict the response for test dataset
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # y_pred = clf.predict(X_test)
 # # Model Accuracy: how often is the classifier correct?
 # print("----------Classification report-----------")
@@ -290,35 +239,19 @@ print(classification_report(y_test, y_pred))
 # clf=tree.DecisionTreeClassifier(criterion='gini',max_depth=3)
 # clf=clf.fit(X_train,y_train)
 # fig = plt.figure(figsize=(20, 12))
-<<<<<<< HEAD
 # _ = tree.plot_tree(clf, feature_names=x.columns, class_names=['0', '1'], filled=True)
-=======
-# _ = tree.plot_tree(clf,
-#  feature_names=x.columns,
-# class_names=['0', '1'],
-# filled=True)
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # fig.savefig("decision_tree.png")
 # plt.show()
 # print(classification_report(y_test, y_pred=clf.predict(X_test)))
 
 # # Random forest classifier
 #
-<<<<<<< HEAD
 # X_train, X_test, y_train, y_test=train_test_split(x.values, y.values, test_size=0.5, random_state=0)
 # rf = RandomForestClassifier(max_depth=10, random_state=0)
 # clf = rf.fit(X_train, y_train)
 # y_pred=clf.predict(X_test)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
-=======
-# X_train,X_test,y_train,y_test=train_test_split(x.values,y.values,test_size=0.5,random_state=0)
-# rf=RandomForestClassifier(max_depth=10,random_state=0)
-# clf=rf.fit(X_train,y_train)
-# y_pred=clf.predict(X_test)
-# print(clf.score(X_test,y_test))
-# print(confusion_matrix(y_test,y_pred))
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # print(classification_report(y_test, y_pred))
 #
 # clf = KNeighborsClassifier(n_neighbors=7)
@@ -334,12 +267,6 @@ print(classification_report(y_test, y_pred))
 # clf = MLPClassifier(max_iter=550)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
-<<<<<<< HEAD
-=======
-# # print(clf.coefs_)
-# # print(clf.n_layers_)
-# # print(clf.n_outputs_)
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
 #
@@ -357,10 +284,6 @@ print(classification_report(y_test, y_pred))
 #     kmeans.fit(x)
 #     wcss.append(kmeans.inertia_)
 #
-<<<<<<< HEAD
-=======
-#
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # plt.plot(range(1, 11), wcss)
 # plt.title('The Elbow Method Graph')
 # plt.xlabel('Number of clusters')
@@ -371,10 +294,6 @@ print(classification_report(y_test, y_pred))
 # clf = rf.fit(x.values)
 # centroids = clf.cluster_centers_
 # score = silhouette_score(data, clf.labels_)
-<<<<<<< HEAD
-=======
-# # print(centroids)
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # print(score)
 #
 # X = x.values
@@ -382,7 +301,6 @@ print(classification_report(y_test, y_pred))
 # y_kmeans = clf.fit_predict(data)
 # # Visualising the clusters
 # # cols = iris.feature_names
-<<<<<<< HEAD
 # plt.scatter(X[y_kmeans == 0, 4],
 #             X[y_kmeans == 0, 6],
 #             s=100, c='purple',
@@ -395,28 +313,6 @@ print(classification_report(y_test, y_pred))
 # plt.scatter(centroids[:, 4],
 #             centroids[:, 6],
 #             s=100, c='black',
-=======
-# plt.scatter(X[y_kmeans == 0, 2],
-#             X[y_kmeans == 0, 3],
-#             s=100, c='purple',
-#             label='1')
-# plt.scatter(X[y_kmeans == 1, 2],
-#             X[y_kmeans == 1, 3],
-#             s=100, c='orange',
-#             label='2')
-# plt.scatter(X[y_kmeans == 2, 0],
-#             X[y_kmeans == 2, 1],
-#             s=100, c='green',
-#             label='3')
-# plt.scatter(X[y_kmeans == 3, 0],
-#             X[y_kmeans == 3, 1],
-#             s=100, c='red',
-#             label='4')
-# # Plotting the centroids of the clusters
-# plt.scatter(centroids[:, 0],
-#             centroids[:, 1],
-#             s=400, c='black',
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 #             marker="x",
 #             label='Centroids')
 # plt.legend()
@@ -443,23 +339,14 @@ print(classification_report(y_test, y_pred))
 # plt.ylabel('distance')
 # plt.show()
 
-<<<<<<< HEAD
-=======
-# parameters = []
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # print("======Menu======")
 # pregnancies = int(input("Enter your number of pregnancies: "))
 # glucose = int(input("Enter your glucose level: "))
 # bloodPressure = int(input("Enter your blood pressure level: "))
 # skinThickness = int(input("Enter your skin thickness: "))
 # insulin = int(input("Enter your insulin level: "))
-<<<<<<< HEAD
 # BMI = float(input("Enter your BMI: "))
 # diabetesPedigreeFunction = float(input("Enter your diabetes pedigree function: "))
-=======
-# BMI = int(input("Enter your BMI: "))
-# diabetesPedigreeFunction = int(input("Enter your diabetes pedigree function: "))
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
 # age = int(input("Enter your age: "))
 #
 # exemplaryPatient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
@@ -469,7 +356,6 @@ print(classification_report(y_test, y_pred))
 # prediction = clf.predict(exemplaryPatient)
 # print("Prediction: ", prediction)
 
-<<<<<<< HEAD
 # # Exemplary patient
 # pregnancies = 4
 # glucose = 150
@@ -485,20 +371,3 @@ print(classification_report(y_test, y_pred))
 # print(patient)
 # prediction = clf.predict(patient)
 # print("Prediction:", prediction)
-=======
-# Exemplary patient
-pregnancies = 4
-glucose = 150
-bloodPressure = 75
-skinThickness = 32
-insulin = 120
-BMI = 35
-diabetesPedigreeFunction = 0.29
-age = 24
-patient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
-                     insulin, BMI, diabetesPedigreeFunction, age]])
-patient = pd.DataFrame(patient)
-print(patient)
-prediction = clf.predict(patient)
-print("Prediction:", prediction)
->>>>>>> 3f30d5ef262e2b1bb3109a9c0e95a4c8561650b2
