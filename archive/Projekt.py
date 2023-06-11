@@ -143,26 +143,30 @@ for factor in df:
 # plt.show()
 
 # Create variable x with all independent variables and y as dependent variable
-
+#
 x = df.drop(['Outcome'], axis=1)
 y = df['Outcome']
+#
+# # Logistic regression
+#
+# x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
+# clf = LogisticRegression(max_iter=1000)
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
+# clf.fit(x_train, y_train)
+# print(clf.score(x_test, y_test))
+# print("----------Classification report for logistic regression-----------")
+# print(classification_report(y_train, y_test))
+# print("With cross validation: ", scores.mean())
 
-# Logistic regression
-
-x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
-clf = LogisticRegression(max_iter=1000)
-clf.fit(x_train, y_train)
-print(clf.score(x_test, y_test))
-print("----------Classification report for logistic regression-----------")
-print(classification_report(y_train, y_test))
-
+#
 # # Naive Bayes
 #
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # gnb = GaussianNB()
-#
+# scores = cross_val_score(gnb, x.values, y.values, cv=10)
 # y_pred = gnb.fit(x_train, y_train).predict(x_test)
 # print("Number of mislabeled points out of a total %d points : %d" % (x_test.shape[0], (y_test != y_pred).sum()))
+# print("With cross validation: ", scores.mean())
 # print(classification_report(y_test, y_pred))
 # cm = confusion_matrix(y_test, y_pred)
 # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
@@ -175,6 +179,7 @@ print(classification_report(y_train, y_test))
 # scaler.fit(df)
 # scaled_data = scaler.transform(df)
 # pca = PCA(n_components=2)
+#
 # pca.fit(scaled_data)
 # x_pca = pca.transform(scaled_data)
 # print(scaled_data.shape)
@@ -186,9 +191,9 @@ print(classification_report(y_train, y_test))
 # plt.show()
 
 # # KNN
-
+#
 # X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=0.5, random_state=0)
-
+#
 # # Find number of neighbours
 #
 # errors = []
@@ -201,25 +206,30 @@ print(classification_report(y_train, y_test))
 #
 # plt.plot(list(range(1, 51)), errors)
 # plt.show()
-
+#
 # clf = KNeighborsClassifier(n_neighbors=8)
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print("Without PCA")
 # print(classification_report(y_test, y_pred))
+# print("Cross validation without PCA", scores.mean())
 #
 # X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
 # clf = KNeighborsClassifier(n_neighbors=8)
+# scores = cross_val_score(clf, x_pca, y.values, cv=10)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print("PCA")
 # print(classification_report(y_test, y_pred))
+# print("Cross validation with PCA", scores.mean())
 
 # # SVM
 #
 # X_train, X_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.3, random_state=109)
 # # Create a svm Classifier
 # clf = svm.SVC(kernel='poly')  # Linear Kernel
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
 # # Train the model using the training sets
 # clf.fit(X_train, y_train)
 # # Predict the response for test dataset
@@ -227,7 +237,8 @@ print(classification_report(y_train, y_test))
 # # Model Accuracy: how often is the classifier correct?
 # print("----------Classification report-----------")
 # print(classification_report(y_test, y_pred))
-#
+# print("Cross-validation: ", scores.mean())
+
 # plt.figure(figsize=(8, 8))
 # sns.scatterplot(x=X_train[:, 0], y=X_train[:, 1], hue=y_train)
 # plt.title("SVM")
@@ -237,64 +248,71 @@ print(classification_report(y_train, y_test))
 #
 # X_train,X_test,y_train,y_test=train_test_split(x.values, y.values,test_size=0.5,random_state=0)
 # clf=tree.DecisionTreeClassifier(criterion='gini',max_depth=3)
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
 # clf=clf.fit(X_train,y_train)
 # fig = plt.figure(figsize=(20, 12))
 # _ = tree.plot_tree(clf, feature_names=x.columns, class_names=['0', '1'], filled=True)
 # fig.savefig("decision_tree.png")
 # plt.show()
 # print(classification_report(y_test, y_pred=clf.predict(X_test)))
+# print("Cross-validation: ", scores.mean())
 
 # # Random forest classifier
 #
 # X_train, X_test, y_train, y_test=train_test_split(x.values, y.values, test_size=0.5, random_state=0)
 # rf = RandomForestClassifier(max_depth=10, random_state=0)
+# scores = cross_val_score(rf, x.values, y.values, cv=10)
 # clf = rf.fit(X_train, y_train)
 # y_pred=clf.predict(X_test)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
 # print(classification_report(y_test, y_pred))
+# print("Cross-validation: ", scores.mean())
 #
 # clf = KNeighborsClassifier(n_neighbors=7)
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
 # print(classification_report(y_test, y_pred))
+# print("Cross-validation: ", scores.mean())
 
 # # Multi layer classifier
 #
 # X_train, X_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5, random_state=0)
 # clf = MLPClassifier(max_iter=550)
+# scores = cross_val_score(clf, x.values, y.values, cv=10)
 # clf = clf.fit(X_train, y_train)
 # y_pred = clf.predict(X_test)
 # print(clf.score(X_test, y_test))
 # print(confusion_matrix(y_test, y_pred))
-#
 # print(classification_report(y_test, y_pred))
+# print("Cross-validation: ", scores.mean())
 
-# # K-means
-#
-# wcss = [] # sum of the squared distance
-# for i in range(1, 11):
-#     kmeans = KMeans(n_clusters=i,
-#                     init='k-means++',
-#                     max_iter=300,
-#                     n_init=10,
-#                     random_state=0)
-#     kmeans.fit(x)
-#     wcss.append(kmeans.inertia_)
-#
-# plt.plot(range(1, 11), wcss)
-# plt.title('The Elbow Method Graph')
-# plt.xlabel('Number of clusters')
-# plt.ylabel('WCSS')
-# plt.show()
-#
-# rf = KMeans(n_clusters=2)
-# clf = rf.fit(x.values)
-# centroids = clf.cluster_centers_
-# score = silhouette_score(data, clf.labels_)
-# print(score)
+# K-means
+
+wcss = [] # sum of the squared distance
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i,
+                    init='k-means++',
+                    max_iter=300,
+                    n_init=10,
+                    random_state=0)
+    kmeans.fit(x)
+    wcss.append(kmeans.inertia_)
+
+plt.plot(range(1, 11), wcss)
+plt.title('The Elbow Method Graph')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+rf = KMeans(n_clusters=2)
+clf = rf.fit(x.values)
+centroids = clf.cluster_centers_
+score = silhouette_score(data, clf.labels_)
+print(score)
 #
 # X = x.values
 # y_kmeans = clf.labels_
