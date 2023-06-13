@@ -146,17 +146,22 @@ for factor in df:
 #
 x = df.drop(['Outcome'], axis=1)
 y = df['Outcome']
+
+scoresAfterValidation = []
 #
 # # Logistic regression
 #
 # x_train, x_test, y_train, y_test = train_test_split(x.values, y.values, test_size=0.5)
 # clf = LogisticRegression(max_iter=1000)
-# scores = cross_val_score(clf, x.values, y.values, cv=10)
+# scores = cross_val_score(clf, x.values, y.values, cv=5)
 # clf.fit(x_train, y_train)
 # print(clf.score(x_test, y_test))
 # print("----------Classification report for logistic regression-----------")
 # print(classification_report(y_train, y_test))
 # print("With cross validation: ", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
 #
 # # Naive Bayes
@@ -172,7 +177,10 @@ y = df['Outcome']
 # disp = ConfusionMatrixDisplay(confusion_matrix=cm)
 # disp.plot()
 # plt.show()
-
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
+#
 # # PCA
 #
 # scaler = StandardScaler()
@@ -215,6 +223,9 @@ y = df['Outcome']
 # print(classification_report(y_test, y_pred))
 # print("Cross validation without PCA", scores.mean())
 #
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
+#
 # X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
 # clf = KNeighborsClassifier(n_neighbors=8)
 # scores = cross_val_score(clf, x_pca, y.values, cv=10)
@@ -223,6 +234,9 @@ y = df['Outcome']
 # print("PCA")
 # print(classification_report(y_test, y_pred))
 # print("Cross validation with PCA", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
 # # SVM
 #
@@ -238,6 +252,9 @@ y = df['Outcome']
 # print("----------Classification report-----------")
 # print(classification_report(y_test, y_pred))
 # print("Cross-validation: ", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
 # plt.figure(figsize=(8, 8))
 # sns.scatterplot(x=X_train[:, 0], y=X_train[:, 1], hue=y_train)
@@ -256,6 +273,9 @@ y = df['Outcome']
 # plt.show()
 # print(classification_report(y_test, y_pred=clf.predict(X_test)))
 # print("Cross-validation: ", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
 # # Random forest classifier
 #
@@ -269,6 +289,9 @@ y = df['Outcome']
 # print(classification_report(y_test, y_pred))
 # print("Cross-validation: ", scores.mean())
 #
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
+#
 # clf = KNeighborsClassifier(n_neighbors=7)
 # scores = cross_val_score(clf, x.values, y.values, cv=10)
 # clf = clf.fit(X_train, y_train)
@@ -277,6 +300,9 @@ y = df['Outcome']
 # print(confusion_matrix(y_test, y_pred))
 # print(classification_report(y_test, y_pred))
 # print("Cross-validation: ", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
 # # Multi layer classifier
 #
@@ -289,51 +315,55 @@ y = df['Outcome']
 # print(confusion_matrix(y_test, y_pred))
 # print(classification_report(y_test, y_pred))
 # print("Cross-validation: ", scores.mean())
+#
+# scores = [x for x in scores]
+# scoresAfterValidation.append(scores)
 
-# K-means
-
-wcss = [] # sum of the squared distance
-for i in range(1, 11):
-    kmeans = KMeans(n_clusters=i,
-                    init='k-means++',
-                    max_iter=300,
-                    n_init=10,
-                    random_state=0)
-    kmeans.fit(x)
-    wcss.append(kmeans.inertia_)
-
-plt.plot(range(1, 11), wcss)
-plt.title('The Elbow Method Graph')
-plt.xlabel('Number of clusters')
-plt.ylabel('WCSS')
-plt.show()
-
-rf = KMeans(n_clusters=2)
-clf = rf.fit(x.values)
-centroids = clf.cluster_centers_
-score = silhouette_score(data, clf.labels_)
-print(score)
+# # K-means
+#
+# wcss = [] # sum of the squared distance
+# for i in range(1, 11):
+#     kmeans = KMeans(n_clusters=i,
+#                     init='k-means++',
+#                     max_iter=300,
+#                     n_init=10,
+#                     random_state=0)
+#     kmeans.fit(x)
+#     wcss.append(kmeans.inertia_)
+#
+# plt.plot(range(1, 11), wcss)
+# plt.title('The Elbow Method Graph')
+# plt.xlabel('Number of clusters')
+# plt.ylabel('WCSS')
+# plt.show()
+#
+# rf = KMeans(n_clusters=2)
+# clf = rf.fit(x.values)
+# centroids = clf.cluster_centers_
+# score = silhouette_score(data, clf.labels_)
+# print(score)
 #
 # X = x.values
 # y_kmeans = clf.labels_
 # y_kmeans = clf.fit_predict(data)
-# # Visualising the clusters
-# # cols = iris.feature_names
-# plt.scatter(X[y_kmeans == 0, 4],
-#             X[y_kmeans == 0, 6],
+# Visualising the clusters
+# plt.scatter(X[y_kmeans == 0, 3],
+#             X[y_kmeans == 0, 4],
 #             s=100, c='purple',
 #             label='1')
-# plt.scatter(X[y_kmeans == 1, 4],
-#             X[y_kmeans == 1, 6],
+# plt.scatter(X[y_kmeans == 1, 3],
+#             X[y_kmeans == 1, 4],
 #             s=100, c='orange',
 #             label='0')
 # # Plotting the centroids of the clusters
-# plt.scatter(centroids[:, 4],
-#             centroids[:, 6],
+# plt.scatter(centroids[:, 3],
+#             centroids[:, 4],
 #             s=100, c='black',
 #             marker="x",
 #             label='Centroids')
 # plt.legend()
+# plt.xlabel("Skin thicknes")
+# plt.ylabel("Insulin")
 # plt.show()
 
 # # Dendrogram
@@ -357,22 +387,35 @@ print(score)
 # plt.ylabel('distance')
 # plt.show()
 
-# print("======Menu======")
-# pregnancies = int(input("Enter your number of pregnancies: "))
-# glucose = int(input("Enter your glucose level: "))
-# bloodPressure = int(input("Enter your blood pressure level: "))
-# skinThickness = int(input("Enter your skin thickness: "))
-# insulin = int(input("Enter your insulin level: "))
-# BMI = float(input("Enter your BMI: "))
-# diabetesPedigreeFunction = float(input("Enter your diabetes pedigree function: "))
-# age = int(input("Enter your age: "))
-#
-# exemplaryPatient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
-#                      insulin, BMI, diabetesPedigreeFunction, age]])
-# exemplaryPatient = pd.DataFrame(exemplaryPatient)
-#
-# prediction = clf.predict(exemplaryPatient)
-# print("Prediction: ", prediction)
+scaler = StandardScaler()
+scaler.fit(df)
+scaled_data = scaler.transform(df)
+pca = PCA(n_components=8)
+
+pca.fit(scaled_data)
+x_pca = pca.transform(scaled_data)
+
+X_train, X_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.5, random_state=0)
+clf = KNeighborsClassifier(n_neighbors=8)
+scores = cross_val_score(clf, x_pca, y.values, cv=10)
+clf = clf.fit(X_train, y_train)
+
+print("======Menu======")
+pregnancies = int(input("Enter your number of pregnancies: "))
+glucose = int(input("Enter your glucose level: "))
+bloodPressure = int(input("Enter your blood pressure level: "))
+skinThickness = int(input("Enter your skin thickness: "))
+insulin = int(input("Enter your insulin level: "))
+BMI = float(input("Enter your BMI: "))
+diabetesPedigreeFunction = float(input("Enter your diabetes pedigree function: "))
+age = int(input("Enter your age: "))
+
+exemplaryPatient = np.array([[pregnancies, glucose, bloodPressure, skinThickness,
+                     insulin, BMI, diabetesPedigreeFunction, age]])
+exemplaryPatient = pd.DataFrame(exemplaryPatient)
+
+prediction = clf.predict(exemplaryPatient)
+print("Prediction: ", prediction)
 
 # # Exemplary patient
 # pregnancies = 4
@@ -389,3 +432,13 @@ print(score)
 # print(patient)
 # prediction = clf.predict(patient)
 # print("Prediction:", prediction)
+
+
+
+# models = ["Logistic regression", "Naive Bayes", "KNN", "KNN with PCA", "SVM", "Decision Tree Classifier", "Random Forest Classifier", "RF with KNN", "Multi layer Classifier"]
+# fig = plt.figure(figsize=(10, 7))
+# fig.suptitle('Algorithm Accuracy Comparison')
+# ax = fig.add_subplot(111)
+# plt.boxplot(scoresAfterValidation)
+# ax.set_xticklabels(models, rotation=25, fontsize=8)
+# plt.show()
